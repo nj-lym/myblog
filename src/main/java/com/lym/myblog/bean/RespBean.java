@@ -1,11 +1,17 @@
 package com.lym.myblog.bean;
 
 /**
- * Created by sang on 2017/12/17.
+ * 通用返回类
  */
 public class RespBean
 {
+    /**
+     * 状态码
+     */
     private String status;
+    /**
+     * 信息
+     */
     private String msg;
 
     public RespBean() {
