@@ -1,5 +1,6 @@
 package com.lym.myblog.service;
 
+import com.lym.myblog.bean.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -11,5 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService
 {
-
+    /**
+     * 添加用户(注册)
+     * @param user
+     * @return 0-注册成功 1-用户名重复 2-添加失败
+     */
+    int addUser(User user);
 }
