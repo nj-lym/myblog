@@ -5,6 +5,7 @@ import com.lym.myblog.bean.User;
 import com.lym.myblog.mapper.RolesMapper;
 import com.lym.myblog.mapper.UserMapper;
 import com.lym.myblog.service.UserService;
+import com.lym.myblog.utils.GetCurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -74,5 +75,48 @@ public class UserServiceImpl implements UserService
         } else {
             return 2;
         }
+    }
+
+    @Override
+    public int updateUserEmail(String email)
+    {
+        return userMapper.updateUserEmail(email, GetCurrentUserUtil.getUser().getId());
+    }
+
+    @Override
+    public List<User> getUserByNickname(String nickName)
+    {
+        return userMapper.getUserByNickname(nickName);
+    }
+
+    @Override
+    public List<Roles> getAllRoles()
+    {
+        return userMapper.getAllRole();
+    }
+
+    @Override
+    public int updateUserEnabled(Boolean enabled, Long uid)
+    {
+        return userMapper.updateUserEnabled(enabled,uid);
+    }
+
+    @Override
+    public int deleteUserById(Long uid)
+    {
+        return userMapper.deleteUserById(uid);
+    }
+
+    @Override
+    public int updateUserRoles(Long[] rids, Long uid)
+    {
+        int i =userMapper.deleteUserRolesByUid(uid);
+        return userMapper.setUserRoles(rids,uid);
+    }
+
+    @Override
+    public User getUserByid(Long id)
+    {
+        return userMapper.getUserByid(id);
     }
 }

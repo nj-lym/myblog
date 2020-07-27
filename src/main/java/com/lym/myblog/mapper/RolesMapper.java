@@ -29,4 +29,7 @@ public interface RolesMapper
      * @return
      */
     int addRoles(@Param("roles") String[] roles, @Param("uid") Long uid);
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.lym.myblog.config;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 /** PasswordEncoder spring提供的密码加密接口
@@ -9,7 +10,7 @@ import org.springframework.util.DigestUtils;
  * @Date 2020-07-23 14:42
  * @Version 1.0
  */
-
+@Component
 public class MyPasswodEncoder implements PasswordEncoder
 {
     /**

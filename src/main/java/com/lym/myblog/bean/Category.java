@@ -1,8 +1,9 @@
 package com.lym.myblog.bean;
 
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * category
@@ -10,11 +11,11 @@ import lombok.Data;
  */
 @Data
 public class Category implements Serializable {
-    private Integer id;
+    private Long id;
 
     private String catename;
 
-    private Date date;
+    private Timestamp date;
 
     private static final long serialVersionUID = 1L;
 }

@@ -31,10 +31,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
     @Autowired
     UserService userService;
+
     /**
      * AuthenticationManagerBuilder用来配置全局的认证相关的信息，
      * 其实就是AuthenticationProvider和UserDetailsService，
      * 前者是认证服务提供者，后者是认证用户（及其权限）。
+     *
      * @param auth
      * @throws Exception
      */
@@ -47,59 +49,82 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
     /**
      * HttpSecurity 具体的权限控制规则配置。一个这个配置相当于xml配置中的一个标签。
+     *
      * @param http
      * @throws Exception
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
-        http.authorizeRequests()
-                .antMatchers("/admin/category/all").authenticated()
-                /*
-                admin/**的URL都需要有超级管理员角色，如果使用.hasAuthority()方法来配置，
-                需要在参数中加上ROLE_,如下.hasAuthority("ROLE_超级管理员")
-                 */
-                .antMatchers("/admin/**","/reg").hasRole("超级管理员")
-                .anyRequest().authenticated()//其他的路径都是登录后即可访问
-                .and().formLogin().loginPage("/login_page").successHandler(new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws
-                    IOException, ServletException
-            {
-                httpServletResponse.setContentType("application/json;charset=utf-8");
-                PrintWriter out = httpServletResponse.getWriter();
-                out.write("{\"status\":\"success\",\"msg\":\"登录成功\"}");
-                out.flush();
-                out.close();
-            }
-        })
-                .failureHandler(new AuthenticationFailureHandler() {
+      /*
+        admin/**的URL都需要有超级管理员角色，如果使用.hasAuthority()方法来配置，
+         需要在参数中加上ROLE_,如下.hasAuthority("ROLE_超级管理员")
+      */
+        http.authorizeRequests()// 对请求进行授权
+                .antMatchers("/admin/category/all")// 指定相应的请求
+                .authenticated()// 都需要身份认证
+                .antMatchers("/admin/**", "/reg")// 指定相应的请求
+                .hasRole("超级管理员")
+                .anyRequest()// 任何请求
+                .authenticated()// 都需要身份认证
+                .and()
+                .formLogin()// 表单登陆
+                .loginPage("/login_page")// 登陆页面
+                .successHandler(new AuthenticationSuccessHandler()
+                {
                     @Override
-                    public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
+                    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws
+                            IOException, ServletException
+                    {
+                        httpServletResponse.setContentType("application/json;charset=utf-8");
+                        PrintWriter out = httpServletResponse.getWriter();
+                        out.write("{\"status\":\"success\",\"msg\":\"登录成功\"}");
+                        out.flush();
+                        out.close();
+                    }
+                })
+                .failureHandler(new AuthenticationFailureHandler()
+                {
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws
+                            IOException, ServletException
+                    {
                         httpServletResponse.setContentType("application/json;charset=utf-8");
                         PrintWriter out = httpServletResponse.getWriter();
                         out.write("{\"status\":\"error\",\"msg\":\"登录失败\"}");
                         out.flush();
                         out.close();
                     }
-                }).loginProcessingUrl("/login")
-                .usernameParameter("username").passwordParameter("password").permitAll()
-                .and().logout().permitAll().and().csrf().disable().exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
+                }).loginProcessingUrl("/login")// 登陆表单提交请求
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .and()
+                .csrf()
+                .disable()
+                .exceptionHandling()
+                .accessDeniedHandler(getAccessDeniedHandler());
 
     }
+
     /**
      * WebSecurity 全局请求忽略规则配置（比如说静态文件，比如说注册页面）
+     *
      * @param web
      * @throws Exception
      */
     @Override
     public void configure(WebSecurity web) throws Exception
     {
-        web.ignoring().antMatchers("/blogimg/**","/index.html","/static/**");
+        web.ignoring().antMatchers("/blogimg/**", "/index.html", "/static/**");
     }
 
     @Bean
-    AccessDeniedHandler getAccessDeniedHandler() {
+    AccessDeniedHandler getAccessDeniedHandler()
+    {
         return new AuthenticationAccessDeniedHandler();
     }
 }
