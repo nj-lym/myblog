@@ -13,7 +13,7 @@
         state=#{state},
         editTime=#{editTime}
     </insert>
-    
+
     <update id="updateArticle" parameterType="com.lym.myblog.bean.Article">
         UPDATE article SET
         title=#{title},
@@ -29,6 +29,71 @@
             ,publishDate=#{publishDate}
         </if>
         WHERE id=#{id}
+    </update>
+
+    <select id="getArticleByState" resultType="com.lym.myblog.bean.Article">
+        SELECT a.id,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.uid FROM article a,user
+        u,category c WHERE a.`cid`=c.`id` AND a.`uid`=u.`id`
+        <if test="state!=-2">
+            and a.uid=#{uid}
+        </if>
+        <if test="state!=-1 and state!=-2">
+            and a.state=#{state}
+        </if>
+        <if test="state==-2">
+            and a.state=1
+        </if>
+        <if test="keywords!=null">
+            AND title LIKE concat('%',#{keywords},'%')
+        </if>
+        ORDER BY a.editTime DESC limit #{start},#{count};
+    </select>
+
+    <select id="getArticleCountByState" resultType="integer">
+        SELECT count(*) FROM article
+        <where>
+            <if test="state!=-1">
+                AND state=#{state}
+            </if>
+            <if test="uid!=null">
+                AND uid=#{uid}
+            </if>
+            <if test="keywords!=null">
+                AND title LIKE concat('%',#{keywords},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getArticleById" resultType="com.lym.myblog.bean.Article">
+        SELECT
+            a.*,
+            t.`tagName`,
+            t.`id` AS tid,
+            u.`nickname`,
+            c.`cateName`
+        FROM
+            article a
+        LEFT JOIN article_tags ats ON a.`id` = ats.`aid`
+        LEFT JOIN tags t ON ats.`tid` = t.`id`
+        LEFT JOIN `user` u ON a.`uid` = u.`id`
+        LEFT JOIN category c ON a.`cid` = c.`id`
+        WHERE
+            a.id = #{aid}
+    </select>
+    <update id="pvIncrement" parameterType="long">
+        UPDATE article set pageView=pageView+1 WHERE id=#{aid}
+    </update>
+    <delete id="deleteArticleById">
+        DELETE FROM article WHERE id IN
+        <foreach collection="aids" item="aid" open="(" close=")" separator=",">
+            #{aid}
+        </foreach>
+    </delete>
+    <update id="updateArticleState">
+        UPDATE article SET state=#{state} WHERE id IN
+        <foreach collection="aids" item="aid" separator="," open="(" close=")">
+            #{aid}
+        </foreach>
     </update>
 
 </mapper>

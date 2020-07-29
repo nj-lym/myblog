@@ -95,7 +95,7 @@ public class ArticleServiceImpl implements ArticleService
      * 添加标签
      *
      * @param dynamicTags
-     * @param aid         活动id
+     * @param aid         文章id
      * @return
      */
     private int addTagsToArticle(String[] dynamicTags, Long aid)
@@ -109,6 +109,38 @@ public class ArticleServiceImpl implements ArticleService
         //4,重新给文章设置标签
         int i = tagsMapper.saveTags2ArticleTags(tIds, aid);
         return i == dynamicTags.length ? i : -1;
+    }
 
+    @Override
+    public Integer getArticleCountByState(Integer state, Long uid, String keywords)
+    {
+        return articleMapper.getArticleCountByState(state, uid, keywords);
+    }
+
+    @Override
+    public List<Article> getArticleByState(Integer state, Integer page, Integer count, String keywords)
+    {
+        int start = (page - 1) * count;
+        Long uid = GetCurrentUserUtil.getUser().getId();
+        return articleMapper.getArticleByState(state, start, count, uid, keywords);
+    }
+
+    @Override
+    public Article getArticleById(Long aid)
+    {
+        Article article = articleMapper.getArticleById(aid);
+        articleMapper.pvIncrement(aid);
+        return article;
+    }
+
+    @Override
+    public int updateArticleState(Long[] aids, Integer state)
+    {
+        //状态等于2 删除
+        if (state == 2) {
+            return articleMapper.deleteArticleById(aids);
+        } else {
+            return articleMapper.updateArticleState(aids, 2);//放入到回收站中
+        }
     }
 }
