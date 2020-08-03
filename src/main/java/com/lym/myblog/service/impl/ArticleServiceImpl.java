@@ -139,8 +139,34 @@ public class ArticleServiceImpl implements ArticleService
         //状态等于2 删除
         if (state == 2) {
             return articleMapper.deleteArticleById(aids);
-        } else {
+        }
+        else {
             return articleMapper.updateArticleState(aids, 2);//放入到回收站中
         }
+    }
+
+    @Override
+    public int restoreArticle(Integer articleId)
+    {
+        // 从回收站还原在原处
+        return articleMapper.updateArticleStateById(articleId, 1);
+    }
+
+    @Override
+    public List<String> getCategories()
+    {
+        return articleMapper.getCategories(GetCurrentUserUtil.getUser().getId());
+    }
+
+    @Override
+    public List<Integer> getDataStatistics()
+    {
+        return articleMapper.getDataStatistics(GetCurrentUserUtil.getUser().getId());
+    }
+
+    @Override
+    public void pvStatisticsPerDay()
+    {
+
     }
 }

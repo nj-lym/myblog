@@ -78,7 +78,7 @@ public interface UserMapper
      * @param id 用户id
      * @return
      */
-    public int deleteUserRolesByUid(Long id);
+    public int deleteUserRolesByUid(@Param("id") Long id);
 
     /**
      * 给用户设置角色

@@ -23,6 +23,7 @@ public interface ArticleService
 
     /**
      * 获取文章总数根据文章状态及用户id
+     *
      * @param state
      * @param uid
      * @param keywords
@@ -32,6 +33,7 @@ public interface ArticleService
 
     /**
      * 根据文章状态获取文章
+     *
      * @param state
      * @param page
      * @param count
@@ -42,6 +44,7 @@ public interface ArticleService
 
     /**
      * 查询某个文章
+     *
      * @param aid 文章id
      * @return
      */
@@ -49,10 +52,37 @@ public interface ArticleService
 
     /**
      * 更新文章状态
-     * @param aids 文章id
+     *
+     * @param aids  文章id
      * @param state
      * @return
      */
     public int updateArticleState(Long[] aids, Integer state);
 
+    /**
+     * 恢复文章(从回收站还原)
+     *
+     * @param articleId
+     * @return
+     */
+    public int restoreArticle(Integer articleId);
+
+    /**
+     * 获取最近七天的日期
+     *
+     * @return
+     */
+    public List<String> getCategories();
+
+    /**
+     * 获取最近七天的数据
+     *
+     * @return
+     */
+    public List<Integer> getDataStatistics();
+
+    /**
+     * 定时调用
+     */
+    public void pvStatisticsPerDay();
 }

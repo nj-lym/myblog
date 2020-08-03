@@ -23,7 +23,7 @@ import java.util.*;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/acticle")
+@RequestMapping("/article")
 public class ArticleController
 {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -131,6 +131,7 @@ public class ArticleController
      * @param state
      * @return
      */
+
     @PutMapping("/dustbin")
     public RespBean updateArticleState(Long[] aids, Integer state)
     {
@@ -139,6 +140,39 @@ public class ArticleController
             return new RespBean("success", "");
         }
         return new RespBean("error", "删除失败!");
+    }
+
+    /**
+     * 恢复文章
+     *
+     * @param articleId
+     * @return
+     */
+    @PutMapping("/restore")
+    public RespBean restoreArticle(Integer articleId)
+    {
+        if (articleService.restoreArticle(articleId) == 1) {
+            return new RespBean("success", "还原成功");
+        }
+        else {
+            return new RespBean("error", "还原失败");
+        }
+    }
+
+    /**
+     * 数据统计
+     * @return
+     */
+    @RequestMapping(value = "/dataStatistics")
+    public Map<String, Object> dataStatistics()
+    {
+        Map<String, Object> map = new HashMap<>();
+        //获取最近七天的日期
+        List<String> categories = articleService.getCategories();
+        List<Integer> dataStatistics = articleService.getDataStatistics();
+        map.put("categories", categories);
+        map.put("ds", dataStatistics);
+        return map;
     }
 
 

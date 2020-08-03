@@ -89,6 +89,7 @@
             #{aid}
         </foreach>
     </delete>
+
     <update id="updateArticleState">
         UPDATE article SET state=#{state} WHERE id IN
         <foreach collection="aids" item="aid" separator="," open="(" close=")">
@@ -96,4 +97,19 @@
         </foreach>
     </update>
 
+    <update id="updateArticleStateById">
+        UPDATE article SET state=#{state} WHERE id = #{articleId}
+    </update>
+
+    <select id="getCategories" resultType="String" parameterType="long">
+        SELECT countDate from pv WHERE uid=#{uid} ORDER by countDate limit 7
+    </select>
+
+    <select parameterType="long" id="getDataStatistics" resultType="int">
+        SELECT pv from pv WHERE uid=#{uid} ORDER by countDate limit 7
+    </select>
+
+    <insert id="pvStatisticsPerDay">
+        INSERT INTO pv(countDate,pv,uid) SELECT CURRENT_DATE(),totalPv-pv,t.`uid` FROM pvview p,totalpvview t WHERE p.`uid`=t.`uid`
+    </insert>
 </mapper>

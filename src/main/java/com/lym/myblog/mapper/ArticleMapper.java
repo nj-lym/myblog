@@ -77,4 +77,31 @@ public interface ArticleMapper
      */
     int updateArticleState(@Param("aids") Long aids[], @Param("state") Integer state);
 
+    /**
+     *
+     * @param articleId
+     * @param state
+     * @return
+     */
+    int updateArticleStateById(@Param("articleId") Integer articleId, @Param("state") Integer state);
+
+    /**
+     * 获取最近七天的日期
+     * @param uid
+     * @return
+     */
+    List<String> getCategories(Long uid);
+
+    /**
+     * 获取最近七天的数据
+     * @param uid
+     * @return
+     */
+    List<Integer> getDataStatistics(Long uid);
+
+    /**
+     * 定时任务每天统计变化
+     */
+    void pvStatisticsPerDay();
+
 }

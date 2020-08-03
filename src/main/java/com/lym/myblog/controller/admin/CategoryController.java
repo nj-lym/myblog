@@ -1,4 +1,4 @@
-package com.lym.myblog.controller;
+package com.lym.myblog.controller.admin;
 
 import com.lym.myblog.bean.Category;
 import com.lym.myblog.bean.RespBean;

@@ -45,7 +45,7 @@
         	SELECT
         		u.id
         	FROM
-        		USER u,
+                `user` u,
         		roles_user ru
         	WHERE
         		u.id = ru.uid
